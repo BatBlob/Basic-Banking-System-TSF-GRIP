@@ -1,7 +1,6 @@
 mat-toolbar {
     background: #004a9f;
     color: white;
-    text-align: center;
 }
 
 mat-sidenav {
@@ -22,19 +21,15 @@ mat-sidenav {
     margin-left: 32px;
 
     display: flex;
-    justify-content: flex-start;
-    align-items: top;
+    justify-content: center;
+    align-items: center;
 
     font-size: 2rem;
-    /* color: lightgray; */
+    color: lightgray;
 }
 
 mat-sidenav-container {
     height: calc(100vh - 65px);
-}
-
-mat-icon{
-    margin-right: 5px;
 }
 
 .menu-button {

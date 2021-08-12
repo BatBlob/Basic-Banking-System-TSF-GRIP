@@ -2,19 +2,18 @@ import { Component, ViewChild, OnInit } from '@angular/core';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatSidenav } from '@angular/material/sidenav';
 import { delay } from 'rxjs/operators';
-import { RoutingService } from './routing.service';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: 'app-navbar',
+  templateUrl: './navbar.component.html',
+  styleUrls: ['./navbar.component.css']
 })
-export class AppComponent {
-  title = 'Basic-Banking-System';
+export class NavbarComponent implements OnInit {
+
   @ViewChild(MatSidenav)
   sidenav!: MatSidenav;
 
-  constructor(private observer: BreakpointObserver, private routing: RoutingService) {}
+  constructor(private observer: BreakpointObserver) {}
   ngOnInit() {}
   ngAfterViewInit() {
     this.observer
@@ -30,9 +29,4 @@ export class AppComponent {
         }
       });
   }
-
-  navigate(to: String) {
-    this.routing.navigate(to);
-  }
-
 }

@@ -1,0 +1,122 @@
+const http = require('http');
+const express = require('express');
+var cors = require('cors')
+// const bodyParser = require('body-parser');
+// const { stringify } = require('qs');
+const socketio = require('socket.io');
+const multer = require('multer');
+// const upload = multer({dest:__dirname + "/src/assets"});
+
+var MongoClient = require('mongodb').MongoClient;
+var url = 'mongodb://localhost:27017/';
+
+const app = express();
+const server = http.createServer(app);
+// const io = socketio(server);
+const io = socketio(server,{
+    cors: {
+            origin: "*",
+            methods: ["GET", "POST"],
+            credentials: true,
+            transports: ['websocket', 'polling'],
+    },
+    allowEIO3: true
+    });
+const PORT = process.env.PORT || 3000
+
+
+const fs = require('fs');
+
+app.use(cors());
+// app.use(bodyParser.json());
+
+Initial_Balance = 1000
+
+// Create/Check Database and Collections
+MongoClient.connect(url, function(err, db) {
+    var dbo = db.db("Basic_Banking_Application");
+    if (err) throw err;
+
+    dbo.listCollections().toArray().then(async function(res) {
+        names = []
+        res.forEach(element => names.push(element.name));
+        
+        if (names.indexOf("Customers") === -1 && names.indexOf("Transfers") === -1)
+        {
+            console.log("Collections do not exist!");
+            await dbo.createCollection("Customers", async function(err, res) {
+                if (err) throw err;
+                console.log("Customers Collection created.");
+
+                let customers;
+                customers = fs.readFileSync('customer_names.txt', { encoding: 'utf8', flag: 'r' }).split('\r\n');
+                to_insert = [];
+                for (name of customers) {
+                    to_insert.push({Name: name, Balance: 0});
+                }
+                await dbo.collection("Customers").insertMany(to_insert, function(err, res) {
+                    if (err) throw err;
+                    db.close();
+                });
+                console.log("Customers Collection Populated.");
+
+                db.close();
+            });
+            
+            await dbo.createCollection("Transfers", function(err, res) {
+                if (err) throw err;
+                console.log("Transfers Collection created.");
+                db.close();
+            });
+
+        }
+        else {
+            console.log("Collections exist.");
+            db.close();
+        }
+    });
+
+    console.log("working");
+});
+
+app.get('/', (req, res) => res.send('hello!'));
+
+function retrieveNames(socket) {
+    MongoClient.connect(url, function(err, db) {
+        var dbo = db.db("Basic_Banking_Application");
+        if (err) throw err;
+
+        dbo.collection("Customers").find({}).toArray(function(err, result) {
+            if (err) throw err;
+            // console.log(result);
+            db.close();
+            io.to(socket.id).emit("getcustomers", result);
+            // var final_cust = [];
+            // // console.log(cust);
+            // for(x of result) {
+            //     delete x["_id"];
+            //     final_cust.push(JSON.stringify(x));
+            // }
+            // // io.to(socket.id).emit("getcustomers", "sex, sex2");
+            // io.to(socket.id).emit("getcustomers", final_cust.toString());
+        });
+    });
+}
+
+io.on("connection", (socket) => {
+    console.log("new connection " + socket.client.id);
+    
+    socket.on("disconnect", () => {
+        console.log("disconnected " + socket.client.id);
+    });
+
+    socket.on("getcustomers", async () => {
+        console.log(socket.client.id + " requested");
+        retrieveNames(socket);
+    });
+
+});
+
+server.listen(PORT, () => {
+    console.log("listening on *:" + PORT)
+})

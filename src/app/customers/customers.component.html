@@ -1,0 +1,8 @@
+<div style="margin: 30px;">
+    <h1>Select Customer to Transfer from:</h1>
+    <div *ngFor="let customer of backend_service.customers">
+    <!-- <div> -->
+        <mat-icon>account_circle</mat-icon>
+        <button mat-raised-button type="button">{{ customer.Name }}</button>
+    </div>
+</div>
