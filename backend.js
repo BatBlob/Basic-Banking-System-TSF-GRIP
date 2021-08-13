@@ -117,6 +117,7 @@ function transfer(details, socket) {
                 if (result1.Balance >= details.amount && (result1 !== undefined && result2 !== undefined)) {
                     await dbo.collection("Customers").updateOne({_id: ObjectId(details.from)}, {$set: {Balance: result1.Balance - details.amount}});
                     await dbo.collection("Customers").updateOne({_id: ObjectId(details.to)}, {$set: {Balance: result2.Balance + details.amount}});
+                    await dbo.collection("Transfers").insertOne({Sender: ObjectId(details.from), Recipient: ObjectId(details.to), Amount: details.amount, Time: new Date()});
                     db.close();
                     io.to(socket.id).emit("transferstatus", "true");
                 }
@@ -126,6 +127,26 @@ function transfer(details, socket) {
                 }
             });
             // db.close();
+        });
+    });
+}
+
+function retrieve_transfers(socket) {
+    MongoClient.connect(url, function(err, db) {
+        var dbo = db.db("Basic_Banking_Application");
+        if (err) throw err;
+        dbo.collection("Transfers").find({}).toArray(async function(err, result) {
+            if (err) throw err;
+            for(x in result) {
+                result[x]["Sender"] = await dbo.collection("Customers").findOne({"_id": ObjectId(result[x].Sender)}, {projection: {_id: 0, Name: 1}});
+                result[x]["Sender"] = result[x]["Sender"]["Name"]
+
+                result[x]["Recipient"] = await dbo.collection("Customers").findOne({"_id": ObjectId(result[x].Recipient)}, {projection: {_id: 0, Name: 1}});
+                result[x]["Recipient"] = result[x]["Recipient"]["Name"]
+            }
+            console.log(result);
+            io.to(socket.id).emit("requesttransfers", result);
+            db.close();
         });
     });
 }
@@ -145,6 +166,11 @@ io.on("connection", (socket) => {
     socket.on("transfer", async (details) => {
         console.log("transfer request");
         transfer(details, socket);
+    });
+
+    socket.on("requesttransfers", async (details) => {
+        console.log("requesting transfer list");
+        retrieve_transfers(socket);
     });
 
 });

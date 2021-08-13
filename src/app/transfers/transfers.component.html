@@ -1,0 +1,35 @@
+<table mat-table [dataSource]="backend_service.transfer_list" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="No.">
+        <th mat-header-cell *matHeaderCellDef> No. </th>
+        <td mat-cell *matCellDef="let element"> {{element['No.']}} </td>
+      </ng-container>
+
+    <ng-container matColumnDef="Sender">
+      <th mat-header-cell *matHeaderCellDef> Sender </th>
+      <td mat-cell *matCellDef="let element"> {{element.Sender}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="Recipient">
+      <th mat-header-cell *matHeaderCellDef> Recipient </th>
+      <td mat-cell *matCellDef="let element"> {{element.Recipient}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="Amount">
+      <th mat-header-cell *matHeaderCellDef> Amount </th>
+      <td mat-cell *matCellDef="let element"> {{element.Amount}} </td>
+    </ng-container>
+  
+    <ng-container matColumnDef="Date">
+      <th mat-header-cell *matHeaderCellDef> Date </th>
+      <td mat-cell *matCellDef="let element"> {{element.Date}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="Time">
+        <th mat-header-cell *matHeaderCellDef> Time </th>
+        <td mat-cell *matCellDef="let element"> {{element.Time}} </td>
+      </ng-container>
+  
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>

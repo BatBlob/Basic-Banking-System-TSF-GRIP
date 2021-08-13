@@ -17,11 +17,13 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
 
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { CustomersComponent } from './customers/customers.component';
 import { TransferBoxComponent } from './transfer-box/transfer-box.component';
+import { TransfersComponent } from './transfers/transfers.component';
 
 const config: SocketIoConfig = { url: environment.api_baseroute, options: {} };
 
@@ -31,7 +33,8 @@ const config: SocketIoConfig = { url: environment.api_baseroute, options: {} };
     NavbarComponent,
     HomeComponent,
     CustomersComponent,
-    TransferBoxComponent
+    TransferBoxComponent,
+    TransfersComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +50,8 @@ const config: SocketIoConfig = { url: environment.api_baseroute, options: {} };
     MatExpansionModule,
     MatFormFieldModule,
     MatInputModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]
