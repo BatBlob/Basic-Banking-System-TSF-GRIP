@@ -16,8 +16,11 @@ export class RoutingService {
   // navigate_home() {
   //   this.router.navigate(['']);
   // }
-
   navigate(to: String) {
-    this.router.navigate(["/"+to]);
+    if (this.router.url === ("/"+to)) {
+      this.router.navigateByUrl('/', {skipLocationChange: true}).then(()=>
+      this.router.navigate(["/"+to]));
+    }
+    else this.router.navigate(["/"+to]);
   }
 }

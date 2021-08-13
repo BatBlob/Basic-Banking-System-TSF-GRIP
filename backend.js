@@ -9,6 +9,7 @@ const multer = require('multer');
 
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017/';
+var ObjectId = require('mongodb').ObjectId;
 
 const app = express();
 const server = http.createServer(app);
@@ -52,7 +53,7 @@ MongoClient.connect(url, function(err, db) {
                 customers = fs.readFileSync('customer_names.txt', { encoding: 'utf8', flag: 'r' }).split('\r\n');
                 to_insert = [];
                 for (name of customers) {
-                    to_insert.push({Name: name, Balance: 0});
+                    to_insert.push({Name: name, Balance: Initial_Balance});
                 }
                 await dbo.collection("Customers").insertMany(to_insert, function(err, res) {
                     if (err) throw err;
@@ -103,6 +104,32 @@ function retrieveNames(socket) {
     });
 }
 
+function transfer(details, socket) {
+    MongoClient.connect(url, function(err, db) {
+        var dbo = db.db("Basic_Banking_Application");
+        if (err) throw err;
+        dbo.collection("Customers").findOne({"_id": ObjectId(details.from)}, function(err, result1) {
+            if (err) throw err;
+            dbo.collection("Customers").findOne({_id: ObjectId(details.to)}, async function(err, result2) {
+                if (err) throw err;
+                // console.log(details);
+                // console.log(result1, result2)   ;
+                if (result1.Balance >= details.amount && (result1 !== undefined && result2 !== undefined)) {
+                    await dbo.collection("Customers").updateOne({_id: ObjectId(details.from)}, {$set: {Balance: result1.Balance - details.amount}});
+                    await dbo.collection("Customers").updateOne({_id: ObjectId(details.to)}, {$set: {Balance: result2.Balance + details.amount}});
+                    db.close();
+                    io.to(socket.id).emit("transferstatus", "true");
+                }
+                else {
+                    db.close();
+                    io.to(socket.id).emit("transferstatus", "false");
+                }
+            });
+            // db.close();
+        });
+    });
+}
+
 io.on("connection", (socket) => {
     console.log("new connection " + socket.client.id);
     
@@ -113,6 +140,11 @@ io.on("connection", (socket) => {
     socket.on("getcustomers", async () => {
         console.log(socket.client.id + " requested");
         retrieveNames(socket);
+    });
+
+    socket.on("transfer", async (details) => {
+        console.log("transfer request");
+        transfer(details, socket);
     });
 
 });

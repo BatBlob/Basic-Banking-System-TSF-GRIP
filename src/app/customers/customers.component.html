@@ -1,5 +1,5 @@
 <div style="margin: 30px;">
-    <h1>Select Customer to Transfer from:</h1>
+    <h1>{{ title }}</h1>
     <div *ngFor="let customer of backend_service.customers">
         <mat-expansion-panel [expanded]="false" hideToggle>
             <mat-expansion-panel-header>
@@ -14,14 +14,21 @@
               <input matInput type="number" value="{{ customer.Balance }}" readonly>
             </mat-form-field>
 
-            <mat-form-field appearance="fill">
-                <mat-label>Transfer Amount</mat-label>
-                <input matInput type="number">
-              </mat-form-field>
-      
-            <button mat-raised-button color="primary" >Transfer Money</button>
+            <mat-form-field appearance="fill" *ngIf="show;">
+                <mat-label >Transfer Amount</mat-label>
+                <input matInput type="number" [(ngModel)] = "transfer_amount">
+            </mat-form-field>
+            
+            <mat-form-field appearance="fill" *ngIf="!show;">
+              <mat-label>Balance after Transfer</mat-label>
+              <input matInput type="number" value="{{ customer.Balance + backend_service.transfer_amount}}" readonly>
+            </mat-form-field>
+            <p style="color: red;">{{ error }}</p>
+            <button mat-raised-button color="primary" (click)="transferring(customer._id ,customer.Balance)">{{ transfer_button }}</button>
           </mat-expansion-panel>
     </div>
+    <!-- <button mat-button (click)="openDialog()">Launch dialog</button> -->
+
 </div>
 
 <!-- <mat-accordion class="example-headers-align"> -->

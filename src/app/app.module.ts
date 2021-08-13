@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
 
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -15,10 +16,12 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { NavbarComponent } from './navbar/navbar.component';
 import { HomeComponent } from './home/home.component';
 import { CustomersComponent } from './customers/customers.component';
+import { TransferBoxComponent } from './transfer-box/transfer-box.component';
 
 const config: SocketIoConfig = { url: environment.api_baseroute, options: {} };
 
@@ -27,13 +30,15 @@ const config: SocketIoConfig = { url: environment.api_baseroute, options: {} };
     AppComponent,
     NavbarComponent,
     HomeComponent,
-    CustomersComponent
+    CustomersComponent,
+    TransferBoxComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     SocketIoModule.forRoot(config),
+    FormsModule,
     MatToolbarModule,
     MatSidenavModule,
     MatButtonModule,
@@ -41,7 +46,8 @@ const config: SocketIoConfig = { url: environment.api_baseroute, options: {} };
     MatDividerModule,
     MatExpansionModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent]
