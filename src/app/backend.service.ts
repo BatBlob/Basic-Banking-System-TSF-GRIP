@@ -33,7 +33,8 @@ export class BackendService {
       for(let x in transfers) {
         transfers[x]["Date"] = new Date(transfers[x]["Time"]).toDateString();
         console.log(transfers[x]["Date"])
-        transfers[x]["Time"] = new Date(transfers[x]["Time"]).getHours() + ":" + new Date(transfers[x]["Time"]).getMinutes() + ":" + new Date(transfers[x]["Time"]).getSeconds();
+        // transfers[x]["Time"] = new Date(transfers[x]["Time"]).getHours() + ":" + new Date(transfers[x]["Time"]).getMinutes() + ":" + new Date(transfers[x]["Time"]).getSeconds();
+        transfers[x]["Time"] = new Date(transfers[x]["Time"]).toLocaleTimeString('en-US');
 
         transfers[x]["No."] = parseInt(x)+1;
       }

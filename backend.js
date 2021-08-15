@@ -114,7 +114,8 @@ function transfer(details, socket) {
                 if (err) throw err;
                 // console.log(details);
                 // console.log(result1, result2)   ;
-                if (result1.Balance >= details.amount && (result1 !== undefined && result2 !== undefined)) {
+                if (details.amount != "" && result1.Balance >= details.amount && (result1 !== undefined && result2 !== undefined)) {
+                    console.log(typeof details.amount, details.amount);
                     await dbo.collection("Customers").updateOne({_id: ObjectId(details.from)}, {$set: {Balance: result1.Balance - details.amount}});
                     await dbo.collection("Customers").updateOne({_id: ObjectId(details.to)}, {$set: {Balance: result2.Balance + details.amount}});
                     await dbo.collection("Transfers").insertOne({Sender: ObjectId(details.from), Recipient: ObjectId(details.to), Amount: details.amount, Time: new Date()});

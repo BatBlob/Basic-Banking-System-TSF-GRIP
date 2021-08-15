@@ -44,16 +44,22 @@ export class CustomersComponent implements OnInit {
   transferring(id: string, balance: number) { 
     if (this.show === false)
     {
-      this.backend_service.set_transfer_to(id);
-      this.backend_service.transfer();
-      this.routing.navigate("customers");
-      this.backend_service.transfer_status = "Transferring";
-      this.openDialog()
+      if (id == this.backend_service.transfer_from) this.error = "* Cannot transfer amount to same person.";
+      else {
+        this.error = "";
+        this.backend_service.set_transfer_to(id);
+        this.backend_service.transfer();
+        this.routing.navigate("customers");
+        this.backend_service.transfer_status = "Transferring";
+        this.openDialog();
+      }
     }
     else {
-      if (balance < parseFloat(this.transfer_amount)) this.error = "* Amount to transfer cannot be larger than balance."
-      else if (parseFloat(this.transfer_amount) == 0) this.error = "* Amount to transfer must be greater than 0."
+      if (this.transfer_amount === null || this.transfer_amount === "") this.error = "* Transfer field cannot be empty.";
+      else if (balance < parseFloat(this.transfer_amount)) this.error = "* Amount to transfer cannot be larger than balance.";
+      else if (parseFloat(this.transfer_amount) == 0) this.error = "* Amount to transfer must be greater than 0.";
       else {
+        console.log(typeof this.transfer_amount, this.transfer_amount);
         this.error = "";
         this.backend_service.set_transfer_from(id);
         this.backend_service.transfer_amount =  parseFloat(this.transfer_amount);
@@ -62,6 +68,10 @@ export class CustomersComponent implements OnInit {
         this.routing.navigate("customers");
       }
     }
+  }
+
+  reset_error() {
+    this.error = "";
   }
 
   openDialog() {

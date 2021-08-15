@@ -2,7 +2,7 @@
     <h1>{{ title }}</h1>
     <mat-accordion>
     <div *ngFor="let customer of backend_service.customers">
-        <mat-expansion-panel [expanded]="false" hideToggle >
+        <mat-expansion-panel [expanded]="false" hideToggle (opened)="reset_error()">
             <mat-expansion-panel-header>
               <mat-panel-title>
               <mat-icon>account_circle</mat-icon>
