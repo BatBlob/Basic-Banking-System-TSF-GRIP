@@ -1,7 +1,26 @@
-div {
+/* div {
     margin-top: 40vh;
     margin-left: 33vw;
 }
+    h1 {
+        font-size: 200%;
+    } */
+
+div {
+    position: relative;
+    width: 85vw;
+    height: 100%;
+    text-align: center;
+    /* align-content: center; */
+    /* border-style: solid; */
+    /* display: flex; */
+    /* justify-content: center; */
+}
 h1 {
-    font-size: 200%;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    font-size: 1.5rem;
 }
