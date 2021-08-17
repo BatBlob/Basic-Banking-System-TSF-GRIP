@@ -11,7 +11,6 @@ var ObjectId = require('mongodb').ObjectId;
 
 const app = express();
 const server = http.createServer(app);
-// const io = socketio(server);
 const io = socketio(server,{
     cors: {
             origin: "*",
