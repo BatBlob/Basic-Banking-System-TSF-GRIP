@@ -1,11 +1,9 @@
 const http = require('http');
 const express = require('express');
 var cors = require('cors')
-// const bodyParser = require('body-parser');
-// const { stringify } = require('qs');
+
 const socketio = require('socket.io');
 const multer = require('multer');
-// const upload = multer({dest:__dirname + "/src/assets"});
 
 var MongoClient = require('mongodb').MongoClient;
 var url = 'mongodb://localhost:27017/';
@@ -29,7 +27,6 @@ const PORT = process.env.PORT || 3000
 const fs = require('fs');
 
 app.use(cors());
-// app.use(bodyParser.json());
 
 Initial_Balance = 1000
 
@@ -89,17 +86,9 @@ function retrieveNames(socket) {
 
         dbo.collection("Customers").find({}).toArray(function(err, result) {
             if (err) throw err;
-            // console.log(result);
             db.close();
             io.to(socket.id).emit("getcustomers", result);
-            // var final_cust = [];
-            // // console.log(cust);
-            // for(x of result) {
-            //     delete x["_id"];
-            //     final_cust.push(JSON.stringify(x));
-            // }
-            // // io.to(socket.id).emit("getcustomers", "sex, sex2");
-            // io.to(socket.id).emit("getcustomers", final_cust.toString());
+
         });
     });
 }
@@ -112,8 +101,7 @@ function transfer(details, socket) {
             if (err) throw err;
             dbo.collection("Customers").findOne({_id: ObjectId(details.to)}, async function(err, result2) {
                 if (err) throw err;
-                // console.log(details);
-                // console.log(result1, result2)   ;
+
                 if (details.amount != "" && result1.Balance >= details.amount && (result1 !== undefined && result2 !== undefined)) {
                     console.log(typeof details.amount, details.amount);
                     await dbo.collection("Customers").updateOne({_id: ObjectId(details.from)}, {$set: {Balance: result1.Balance - details.amount}});
@@ -127,7 +115,6 @@ function transfer(details, socket) {
                     io.to(socket.id).emit("transferstatus", "false");
                 }
             });
-            // db.close();
         });
     });
 }
